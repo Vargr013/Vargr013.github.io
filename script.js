@@ -6,62 +6,50 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebarExpand = document.getElementById('sidebarExpand');
     let referenceList = [];
 
-    // Sidebar toggle functionality
-    sidebar.addEventListener('click', function(e) {
-        if (e.target.tagName === 'A') {
-            e.preventDefault();
-            const target = e.target.getAttribute('href').substring(1);
-            updateContent(target);
-            // Close sidebar after selection
-            closeSidebar();
-        }
-    });
-
-    // Expand button functionality
-    sidebarExpand.addEventListener('click', function() {
-        toggleSidebar();
-    });
-
-    // Function to toggle sidebar
-    function toggleSidebar() {
-        sidebar.classList.toggle('active');
-        content.classList.toggle('active');
+// Sidebar toggle functionality
+sidebar.addEventListener('click', function(e) {
+    if (e.target.tagName === 'A') {
+        e.preventDefault();
+        const target = e.target.getAttribute('href').substring(1);
+        updateContent(target);
+        // Collapse sidebar after selection
+        sidebar.classList.add('active');
+        content.classList.add('active');
     }
+});
 
-    // Function to close sidebar
-    function closeSidebar() {
-        if (window.innerWidth <= 768) {
-            sidebar.classList.remove('active');
-            content.classList.remove('active');
-        }
+// Expand button functionality
+sidebarExpand.addEventListener('click', function() {
+    sidebar.classList.toggle('active');
+    content.classList.toggle('active');
+});
+
+// Dark mode toggle functionality
+darkModeToggle.addEventListener('change', function() {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('darkMode', this.checked);
+});
+
+// Check for saved dark mode preference
+if (localStorage.getItem('darkMode') === 'true') {
+    darkModeToggle.checked = true;
+    document.body.classList.add('dark-mode');
+}
+
+function updateContent(target) {
+    if (target === 'home') {
+        showHomePage();
+    } else if (target === 'reference-list') {
+        showReferenceList();
+    } else if (target === 'settings') {
+        showSettingsPage();
+    } else {
+        showReferencingMethod(target);
     }
+}
 
-    // Dark mode toggle functionality
-    darkModeToggle.addEventListener('change', function() {
-        document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', this.checked);
-    });
-
-    // Check for saved dark mode preference
-    if (localStorage.getItem('darkMode') === 'true') {
-        darkModeToggle.checked = true;
-        document.body.classList.add('dark-mode');
-    }
-
-    function updateContent(target) {
-        if (target === 'home') {
-            showHomePage();
-        } else if (target === 'reference-list') {
-            showReferenceList();
-        } else if (target === 'settings') {
-            showSettingsPage();
-        } else {
-            showReferencingMethod(target);
-        }
-    }
-
-        function showHomePage() {
-            mainContent.innerHTML = `
+function showHomePage() {
+    mainContent.innerHTML = `
         <div class="home-page">
             <h1>Welcome to the Referencing Guide</h1>
             <p>This website is designed to help you create accurate references and footnotes for various types of sources in your academic or professional work.</p>
@@ -85,8 +73,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             <p>If you have any questions or encounter any issues, please contact your institution's library or academic support team.</p>
         </div>
-        `;
-    }
+    `;
+}
 
     function showReferencingMethod(method) {
         if (method === 'legislation') {
@@ -472,12 +460,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Show homepage on initial load
     showHomePage();
-
-    // Add resize event listener to handle transitions between mobile and desktop layouts
-    window.addEventListener('resize', function() {
-        if (window.innerWidth > 768) {
-            sidebar.classList.remove('active');
-            content.classList.remove('active');
-        }
-    });
 });
