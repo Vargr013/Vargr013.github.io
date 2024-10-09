@@ -6,78 +6,75 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebarExpand = document.getElementById('sidebarExpand');
     let referenceList = [];
 
-    // Sidebar toggle functionality
-    sidebar.addEventListener('click', function(e) {
-        if (e.target.tagName === 'A') {
-            e.preventDefault();
-            const target = e.target.getAttribute('href').substring(1);
-            updateContent(target);
-        }
-    });
-
-    // Expand button functionality
-    sidebarExpand.addEventListener('click', function() {
-        sidebar.classList.toggle('active');
-        content.classList.toggle('active');
-    });
-
-    // Dark mode toggle functionality
-    darkModeToggle.addEventListener('change', function() {
-        document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', this.checked);
-    });
-
-    // Check for saved dark mode preference
-    if (localStorage.getItem('darkMode') === 'true') {
-        darkModeToggle.checked = true;
-        document.body.classList.add('dark-mode');
+// Sidebar toggle functionality
+sidebar.addEventListener('click', function(e) {
+    if (e.target.tagName === 'A') {
+        e.preventDefault();
+        const target = e.target.getAttribute('href').substring(1);
+        updateContent(target);
+        // Collapse sidebar after selection
+        sidebar.classList.add('active');
+        content.classList.add('active');
     }
-    
-    function updateContent(target) {
-        if (target === 'home') {
-            showHomePage();
-        } else if (target === 'reference-list') {
-            showReferenceList();
-        } else if (target === 'settings') {
-            showSettingsPage();
-        } else {
-            showReferencingMethod(target);
-        }
+});
 
-        // If on mobile, close the sidebar after selection
-        if (window.innerWidth <= 768) {
-            sidebar.classList.add('active');
-            content.classList.add('active');
-        }
+// Expand button functionality
+sidebarExpand.addEventListener('click', function() {
+    sidebar.classList.toggle('active');
+    content.classList.toggle('active');
+});
+
+// Dark mode toggle functionality
+darkModeToggle.addEventListener('change', function() {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('darkMode', this.checked);
+});
+
+// Check for saved dark mode preference
+if (localStorage.getItem('darkMode') === 'true') {
+    darkModeToggle.checked = true;
+    document.body.classList.add('dark-mode');
+}
+
+function updateContent(target) {
+    if (target === 'home') {
+        showHomePage();
+    } else if (target === 'reference-list') {
+        showReferenceList();
+    } else if (target === 'settings') {
+        showSettingsPage();
+    } else {
+        showReferencingMethod(target);
     }
+}
 
-    function showHomePage() {
-        mainContent.innerHTML = `
-            <div class="home-page">
-                <h1>Welcome to the Referencing Guide</h1>
-                <p>This website is designed to help you create accurate references and footnotes for various types of sources in your academic or professional work.</p>
-                
-                <h2>How to Use This Website</h2>
-                <ol>
-                    <li>Select a referencing method from the sidebar on the left.</li>
-                    <li>Fill in the required information in the form that appears.</li>
-                    <li>Click the "Generate Reference" button.</li>
-                    <li>Your generated reference will appear below the form.</li>
-                    <li>Click "Add to Reference List" to save the reference.</li>
-                    <li>View and manage your references in the Reference List section.</li>
-                </ol>
+function showHomePage() {
+    mainContent.innerHTML = `
+        <div class="home-page">
+            <h1>Welcome to the Referencing Guide</h1>
+            <p>This website is designed to help you create accurate references and footnotes for various types of sources in your academic or professional work.</p>
+            
+            <h2>How to Use This Website</h2>
+            <ol>
+                <li>Select a referencing method from the sidebar on the left.</li>
+                <li>Fill in the required information in the form that appears.</li>
+                <li>Click the "Generate Reference" button.</li>
+                <li>Your generated reference will appear below the form.</li>
+                <li>Click "Add to Reference List" to save the reference.</li>
+                <li>View and manage your references in the Reference List section.</li>
+            </ol>
 
-                <h2>Tips</h2>
-                <ul>
-                    <li>Use the dark mode toggle in the top right corner to switch between light and dark themes.</li>
-                    <li>On mobile devices, use the menu icon in the top left corner to show or hide the sidebar.</li>
-                    <li>Always double-check your generated references against your institution's specific guidelines.</li>
-                </ul>
+            <h2>Tips</h2>
+            <ul>
+                <li>Use the dark mode toggle in the top right corner to switch between light and dark themes.</li>
+                <li>On mobile devices, use the menu icon in the top left corner to show or hide the sidebar.</li>
+                <li>Always double-check your generated references against your institution's specific guidelines.</li>
+            </ul>
 
-                <p>If you have any questions or encounter any issues, please contact your institution's library or academic support team.</p>
-            </div>
-        `;
-    }
+            <p>If you have any questions or encounter any issues, please contact your institution's library or academic support team.</p>
+        </div>
+    `;
+}
 
     function showReferencingMethod(method) {
         if (method === 'legislation') {
@@ -417,44 +414,31 @@ document.addEventListener('DOMContentLoaded', function() {
         mainContent.innerHTML = `
             <div class="settings-container">
                 <h2>Settings</h2>
-                <h3>Select Font Size</h3>
-                <div class="font-options">
-                    <div class="font-card font-small" data-size="14px">
-                        <h3>Small</h3>
-                    </div>
-                    <div class="font-card font-medium" data-size="16px">
-                        <h3>Medium</h3>
-                    </div>
-                    <div class="font-card font-large" data-size="18px">
-                        <h3>Large</h3>
-                    </div>
-                    <div class="font-card font-extra-large" data-size="20px">
-                        <h3>Extra Large</h3>
-                    </div>
+                <h3>Font Size</h3>
+                <div class="font-size-slider">
+                    <input type="range" min="12" max="24" value="16" class="slider" id="font-size-slider">
+                    <div class="font-size-display">16px</div>
                 </div>
             </div>
         `;
 
-        const fontCards = document.querySelectorAll('.font-card');
-        fontCards.forEach(card => {
-            card.addEventListener('click', function() {
-                const fontSize = this.getAttribute('data-size');
-                document.documentElement.style.setProperty('--font-size', fontSize);
-                localStorage.setItem('selectedFontSize', fontSize);
-                fontCards.forEach(c => c.classList.remove('selected'));
-                this.classList.add('selected');
-                applyFontSize(fontSize);
-            });
+        const fontSizeSlider = document.getElementById('font-size-slider');
+        const fontSizeDisplay = document.querySelector('.font-size-display');
+
+        fontSizeSlider.addEventListener('input', function() {
+            const fontSize = this.value + 'px';
+            fontSizeDisplay.textContent = fontSize;
+            document.documentElement.style.setProperty('--font-size', fontSize);
+            localStorage.setItem('selectedFontSize', fontSize);
+            applyFontSize(fontSize);
         });
 
         // Set the selected font size on page load
         const savedFontSize = localStorage.getItem('selectedFontSize');
         if (savedFontSize) {
+            fontSizeSlider.value = parseInt(savedFontSize);
+            fontSizeDisplay.textContent = savedFontSize;
             document.documentElement.style.setProperty('--font-size', savedFontSize);
-            const selectedCard = document.querySelector(`[data-size="${savedFontSize}"]`);
-            if (selectedCard) {
-                selectedCard.classList.add('selected');
-            }
             applyFontSize(savedFontSize);
         }
     }
